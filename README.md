@@ -3,7 +3,7 @@ HPRGB2
 
 Arduino Library for High Power RGB LED shield @ http://ledshield.wordpress.com
 
-This supercedes the HPRGB_Shield_V2_Library-v1.2.1.zip library available on Google Code.
+This supersedes the HPRGB_Shield_V2_Library-v1.2.1.zip library available on Google Code.
 https://code.google.com/p/neuroelec/downloads/detail?name=HPRGB_Shield_V2_Library-v1.2.1.zip&can=2&q=
 
 
