@@ -1,0 +1,40 @@
+#######################################
+# Syntax Coloring Map For HP RGB Shield V2.5
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+HPRGB			KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+begin			KEYWORD2
+getCurrent		KEYWORD2
+setCurrent		KEYWORD2
+getFreq			KEYWORD2
+setFreq			KEYWORD2
+eepromWrite		KEYWORD2
+getValue		KEYWORD2
+goToRGB			KEYWORD2
+goToRGBHI		KEYWORD2
+goToRGB12		KEYWORD2
+goToHSB			KEYWORD2
+goToHSB10		KEYWORD2
+fadeToHSB		KEYWORD2
+setPWMFrequency	KEYWORD2
+getIntTemp		KEYWORD2
+getIntTempF		KEYWORD2
+getExtTemp		KEYWORD2
+getExtTempF		KEYWORD2
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
