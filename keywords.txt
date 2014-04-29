@@ -16,6 +16,7 @@ getCurrent		KEYWORD2
 setCurrent		KEYWORD2
 getFreq			KEYWORD2
 setFreq			KEYWORD2
+setFreqAndCurrent	KEYWORD2
 eepromWrite		KEYWORD2
 getValue		KEYWORD2
 goToRGB			KEYWORD2

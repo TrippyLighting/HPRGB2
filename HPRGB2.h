@@ -40,7 +40,7 @@ class HPRGB {
     void        goToRGB12(uint16_t, uint16_t, uint16_t);
     void        goToHSB(uint8_t, uint8_t, uint8_t);
 	void        goToHSB10(uint16_t, uint8_t, uint8_t);
-    void        setPWMFrequency(uint16_t frequency);
+	void        setPWMFrequency(uint16_t );
     float       getIntTemp();
     float       getExtTemp();
     float       getIntTempF();
@@ -75,6 +75,8 @@ class HPRGB {
     uint16_t     pca9685GetPWM(uint8_t);
     void         HSBtoRGB8(uint8_t , uint8_t, uint8_t, uint8_t*, uint8_t*, uint8_t*);
 	void         HSBtoRGB10(uint16_t , uint8_t, uint8_t, uint8_t*, uint8_t*, uint8_t*);
+	void         HSBtoRGB10_1(uint16_t , uint8_t , uint8_t , uint8_t* , uint8_t*,  uint8_t *);
+	void         HSBtoRGB10_2(uint16_t , uint8_t , uint8_t , uint8_t* , uint8_t*, uint8_t *);
 };
 
 #endif

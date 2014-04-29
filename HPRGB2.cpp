@@ -91,15 +91,15 @@ void HPRGB::begin()
 	Wire.begin();
 #endif
 
-  getStatus(); // read the values from mcp4728
-  for (uint8_t ch=0;ch>=4 ;ch++ )
-  {
-    _intVref[ch] = 1; // set all channels to use internal voltage reference (2.048V)
-	_gain[ch] = 0; // Gain = x1
-	_powerDown[ch] = 0; // Regular running mode
-  }
-  mcp4728FastWrite(); // write initial values to input registers.
-  pca9685Wake(); // wake PCA9685.
+	getStatus(); // read the values from mcp4728
+	for (uint8_t ch=0;ch<=3 ;ch++ )
+	{
+		_intVref[ch] = 1; // set all channels to use internal voltage reference (2.048V)
+		_gain[ch] = 0; // Gain = x1
+		_powerDown[ch] = 0; // Regular running mode
+	}
+	mcp4728FastWrite(); // write initial values to input registers.
+	pca9685Wake(); // wake PCA9685.
 }
 
 /*
@@ -137,8 +137,8 @@ uint16_t HPRGB::getCurrent(uint8_t channel) {
 /*
 Set maximum current setting of the channels (mA)
 */
-void HPRGB::setCurrent(uint16_t currentSet1, uint16_t currentSet2, uint16_t currentSet3) {
-  uint16_t values[3] = {currentSet1, currentSet2, currentSet3};
+void HPRGB::setCurrent(uint16_t redCurrent, uint16_t greenCurrent, uint16_t blueCurrent) {
+  uint16_t values[3] = {blueCurrent, greenCurrent, redCurrent};
   for (uint8_t channel=0; channel <= 2; channel++) {
     _values[channel+1] = values[channel] * senseR * 20;
   }
@@ -173,8 +173,8 @@ void HPRGB::setFreq(uint16_t freq) {
  set operating frequency (KHz) and maximum current setting for each channel (mA)
  Due to the non-linear curve of freq, +-1% inaccuracy
  */
-void HPRGB::setFreqAndCurrent(uint16_t freq, uint16_t currentSet1, uint16_t currentSet2, uint16_t currentSet3) {
-    uint16_t values[3] = {currentSet1, currentSet2, currentSet3};
+void HPRGB::setFreqAndCurrent(uint16_t freq, uint16_t redCurrent, uint16_t greenCurrent, uint16_t blueCurrent) {
+    uint16_t values[3] = {blueCurrent, greenCurrent, redCurrent};
     _values[0] =  0.0001787 * freq * freq + 0.56895 * freq + 8.0598; // second order polynominal fitting to the curve (freq vs DAC steps)
     for (uint8_t channel=0; channel <= 2; channel++) {
       _values[channel+1] = values[channel] * senseR * 20;
@@ -467,6 +467,9 @@ void HPRGB::HSBtoRGB8(uint8_t h, uint8_t s, uint8_t v, uint8_t* r, uint8_t* g, u
 
 }
 
+// original code from http://www.johngineer.com/blog/?p=1022
+//optimizations to routine on: http://www.adafruit.com/blog/2012/03/14/constant-brightness-hsb-to-rgb-algorithm/
+
 void HPRGB::HSBtoRGB10(uint16_t index, uint8_t sat, uint8_t bright, uint8_t* r, uint8_t* g, uint8_t *b  )
 {
 	uint16_t r_temp, g_temp, b_temp;
@@ -515,3 +518,30 @@ void HPRGB::HSBtoRGB10(uint16_t index, uint8_t sat, uint8_t bright, uint8_t* r, 
 	*g = (uint8_t)g_temp;
 	*b = (uint8_t)b_temp;
 }
+
+void HPRGB::HSBtoRGB10_2(uint16_t index, uint8_t sat, uint8_t bright, uint8_t* r, uint8_t* g, uint8_t *b  ) {
+//	uint8_t temp[5], n = (index >> 8) % 3;
+	uint8_t temp[5], n = (index >> 8);
+	// %3 not needed if input is constrained, but may be useful for color cycling and/or if modulo constant is fast
+	uint8_t x = ((((index & 255) * sat) >> 8) * bright) >> 8;
+	// shifts may be added for added speed and precision at the end if fast 32 bit calculation is available
+	uint8_t s = (( 256 - sat ) * bright) >> 8;
+	temp[0] = temp[3] = s;
+	temp[1] = temp[4] = x + s;
+	temp[2] = bright - x;
+	*r = (uint8_t)temp[n + 2];
+	*g = (uint8_t)temp[n + 1];
+	*r = (uint8_t)temp[n ];
+}
+
+
+void HPRGB::HSBtoRGB10_1(uint16_t index, uint8_t sat, uint8_t bright, uint8_t* r, uint8_t* g, uint8_t *b  ) {
+//	uint8_t temp[5], n = (index >> 8) % 3;
+	uint8_t temp[5], n = (index >> 8);
+	temp[0] = temp[3] = (uint8_t)(( (sat ^ 255) * bright) / 255);
+	temp[1] = temp[4] = (uint8_t)((((( (index & 255) * sat) / 255) + (sat ^ 255)) * bright) / 255);
+	temp[2] = (uint8_t)(((((((index & 255) ^ 255) * sat) / 255) + (sat ^ 255)) * bright) / 255);
+	*r = temp[n + 2];
+	*g = temp[n + 1];
+	*r = temp[n ];
+	}
